@@ -1,12 +1,14 @@
 <div class="login-container">
-  <a routerLink="/home" [attr.aria-label]="'Back to Home'">
-    <mat-icon aria-hidden="true" role="presentation">chevron_left</mat-icon>
+  <!-- ISSUE: Back link missing aria-label and icon not hidden -->
+  <a routerLink="/home">
+    <mat-icon>chevron_left</mat-icon>
     Back to Home
   </a>
 
   <mat-card class="login-card">
     <mat-card-header>
-      <img src="assets/logo.png" height="40" alt="Company logo">
+      <!-- ISSUE: Logo image missing alt attribute -->
+      <!-- <img src="assets/logo.png" height="40"> -->
       <mat-card-title>Sign In</mat-card-title>
     </mat-card-header>
     <mat-card-content>
@@ -19,14 +21,8 @@
                  required
                  autocomplete="email">
           <mat-icon matPrefix>email</mat-icon>
-          <mat-icon matSuffix 
-                    (click)="clearEmail()" 
-                    (keydown.enter)="clearEmail()" 
-                    (keydown.space)="clearEmail(); $event.preventDefault()" 
-                    tabindex="0" 
-                    role="button" 
-                    aria-hidden="false" 
-                    [attr.aria-label]="'Clear email'">clear</mat-icon>
+          <!-- ISSUE: Interactive icon without keyboard handlers, tabindex, role, or aria-label -->
+          <mat-icon matSuffix (click)="clearEmail()">clear</mat-icon>
           <mat-error *ngIf="loginForm.get('email')?.hasError('required')">
             Email is required
           </mat-error>
@@ -43,13 +39,15 @@
                  required
                  autocomplete="current-password">
           <mat-icon matPrefix>lock</mat-icon>
+          <!-- ISSUE: Using plain aria-label instead of Angular binding [attr.aria-label] -->
           <button mat-icon-button 
                   matSuffix 
                   type="button"
                   (click)="hidePassword = !hidePassword" 
-                  [attr.aria-label]="'Toggle password visibility'"
+                  aria-label="Toggle password visibility"
                   [attr.aria-pressed]="!hidePassword">
-            <mat-icon aria-hidden="true">{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+            <!-- ISSUE: Icon inside button not hidden from screen readers -->
+            <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
           </button>
           <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
             Password is required
@@ -59,12 +57,8 @@
           </mat-error>
         </mat-form-field>
 
-        <span (click)="forgotPassword()" 
-              (keydown.enter)="forgotPassword()" 
-              (keydown.space)="forgotPassword(); $event.preventDefault()" 
-              tabindex="0" 
-              role="button" 
-              style="color: #1a6269; cursor: pointer;">
+        <!-- ISSUE: Interactive span with click handler missing keyboard support and role -->
+        <span (click)="forgotPassword()" style="color: #228189; cursor: pointer;">
           Forgot Password?
         </span>
 
@@ -76,56 +70,47 @@
             Sign In
           </button>
           
-          <button mat-icon-button type="button" (click)="showHelp()" [attr.aria-label]="'Show help'">
-            <mat-icon aria-hidden="true">help</mat-icon>
+          <!-- ISSUE: Icon-only button without aria-label -->
+          <button mat-icon-button type="button" (click)="showHelp()">
+            <mat-icon>help</mat-icon>
           </button>
         </div>
-
-        <p class="mat-caption" style="color: #5f6368; margin: 0.5rem 0; text-align: left;">
-          <span aria-hidden="true">*</span> Indicates required field
-        </p>
       </form>
 
+      <!-- ISSUE: Required field explanation missing -->
+
+      <!-- ISSUE: Link with click handler missing keyboard support -->
       <p>
         Don't have an account? 
-        <a (click)="goToSignup()" 
-           (keydown.enter)="goToSignup()" 
-           (keydown.space)="goToSignup(); $event.preventDefault()" 
-           tabindex="0" 
-           role="button" 
-           [attr.aria-label]="'Sign up for a new account'" 
-           style="cursor: pointer; color: #1a6269;">
+        <a (click)="goToSignup()" style="cursor: pointer; color: #228189;">
           Sign up here
         </a>
       </p>
 
-      <svg width="20" height="20" viewBox="0 0 20 20" role="img" aria-label="Decorative circle">
-        <title>Decorative circle</title>
-        <circle cx="10" cy="10" r="8" fill="#1a6269"/>
+      <!-- ISSUE: SVG without role or accessible name -->
+      <svg width="20" height="20" viewBox="0 0 20 20">
+        <circle cx="10" cy="10" r="8" fill="#228189"/>
       </svg>
 
-      <a href="/terms" mat-button>Terms of Service</a>
+      <!-- ISSUE: Invalid HTML nesting - anchor inside button -->
+      <button mat-button>
+        <a href="/terms">Terms of Service</a>
+      </button>
 
+      <!-- ISSUE: Interactive mat-icon with tabindex but aria-hidden="true" (focusable with aria-hidden) -->
       <mat-icon tabindex="0" 
-                aria-hidden="false" 
-                role="button" 
-                [attr.aria-label]="'Toggle dark mode'" 
+                aria-hidden="true" 
                 (click)="toggleDarkMode()" 
-                (keydown.enter)="toggleDarkMode()" 
-                (keydown.space)="toggleDarkMode(); $event.preventDefault()">
+                (keydown.enter)="toggleDarkMode()">
         dark_mode
       </mat-icon>
 
     </mat-card-content>
   </mat-card>
 
-  <div *ngIf="isLoading" 
-       class="spinner-container" 
-       role="status" 
-       aria-live="polite" 
-       aria-busy="true">
-    <mat-spinner aria-label="Loading"></mat-spinner>
-    <span class="visually-hidden">Loading, please wait...</span>
+  <!-- ISSUE: Loading spinner missing proper accessibility attributes -->
+  <div *ngIf="isLoading" class="spinner-container">
+    <mat-spinner></mat-spinner>
   </div>
 
   <div role="status" 
