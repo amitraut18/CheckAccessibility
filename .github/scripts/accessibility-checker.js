@@ -157,10 +157,8 @@ const ACCESSIBILITY_RULES = [
     wcagLevel: 'A',
     wcagCriteria: '4.1.2 Name, Role, Value',
     howToFix: 'Remove aria-hidden="true" or change to aria-hidden="false" on focusable elements',
-    fixExample: '<mat-icon tabindex="0" r,
-    howToFix: 'Replace aria-label="text" with [attr.aria-label]="\'text\'"',
-    fixExample: '<button [attr.aria-label]="\'Delete item\'">Delete</button>',
-    autoFixable: true
+    fixExample: '<mat-icon tabindex="0" role="button" aria-hidden="false" [attr.aria-label]="\'Action\'">icon</mat-icon>',
+    autoFixable: false
   },
   {
     id: 'loading-spinner-role',
@@ -175,6 +173,7 @@ const ACCESSIBILITY_RULES = [
     howToFix: 'Wrap spinner in container with role="status", aria-live="polite", aria-busy="true", and visually-hidden text',
     fixExample: '<div role="status" aria-live="polite" aria-busy="true"><mat-spinner aria-label="Loading"></mat-spinner><span class="visually-hidden">Loading, please wait...</span></div>',
     autoFixable: false
+  },
   {
     id: 'plain-aria-label',
     name: 'Angular Attribute Binding',
@@ -184,18 +183,10 @@ const ACCESSIBILITY_RULES = [
     severity: 'warning',
     fileTypes: ['html'],
     wcagLevel: 'Best Practice',
-    wcagCriteria: 'Angular Best Practice'
-  },
-  {
-    id: 'loading-spinner-role',
-    name: 'Loading Indicator Accessibility',
-    description: 'Loading indicators must have role="status" and aria-live="polite"',
-    pattern: '<mat-spinner',
-    excludePattern: 'role="status"',
-    severity: 'warning',
-    fileTypes: ['html'],
-    wcagLevel: 'A',
-    wcagCriteria: '4.1.3 Status Messages'
+    wcagCriteria: 'Angular Best Practice',
+    howToFix: 'Replace aria-label="text" with [attr.aria-label]="\'text\'"',
+    fixExample: '<button [attr.aria-label]="\'Delete item\'">Delete</button>',
+    autoFixable: true
   }
 ];
 
