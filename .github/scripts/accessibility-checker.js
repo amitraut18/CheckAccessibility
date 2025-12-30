@@ -221,10 +221,7 @@ function checkRule(rule, filePath, fileContent) {
   
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
-    const lineNumber = i + 1;,
-            howToFix: rule.howToFix,
-            fixExample: rule.fixExample,
-            autoFixable: rule.autoFixable
+    const lineNumber = i + 1;
     
     // Check if pattern matches
     const patternRegex = new RegExp(rule.pattern, 'i');
@@ -234,10 +231,7 @@ function checkRule(rule, filePath, fileContent) {
         const excludeRegex = new RegExp(rule.excludePattern, 'i');
         if (!excludeRegex.test(line)) {
           issues.push({
-            rule: rule.id,,
-          howToFix: rule.howToFix,
-          fixExample: rule.fixExample,
-          autoFixable: rule.autoFixable
+            rule: rule.id,
             name: rule.name,
             description: rule.description,
             severity: rule.severity,
@@ -245,7 +239,10 @@ function checkRule(rule, filePath, fileContent) {
             line: lineNumber,
             content: line.trim(),
             wcagLevel: rule.wcagLevel,
-            wcagCriteria: rule.wcagCriteria
+            wcagCriteria: rule.wcagCriteria,
+            howToFix: rule.howToFix,
+            fixExample: rule.fixExample,
+            autoFixable: rule.autoFixable
           });
         }
       } else {
@@ -315,11 +312,6 @@ function generateReport(results) {
   const warningCount = allIssues.filter(i => i.severity === 'warning').length;
   
   report += `## Summary\n\n`;
-    report += `**How to Fix**: ${data.rule.howToFix}\n\n`;
-    report += `**Fix Example**:\n\`\`\`html\n${data.rule.fixExample}\n\`\`\`\n\n`;
-    if (data.rule.autoFixable) {
-      report += `✨ **Auto-fixable**: This issue can be automatically fixed by Copilot\n\n`;
-    }
   report += `- ❌ **Errors**: ${errorCount}\n`;
   report += `- ⚠️ **Warnings**: ${warningCount}\n`;
   report += `- 📊 **Total Issues**: ${allIssues.length}\n\n`;
@@ -330,6 +322,11 @@ function generateReport(results) {
     const icon = data.rule.severity === 'error' ? '❌' : '⚠️';
     report += `## ${icon} ${data.rule.name}\n\n`;
     report += `**Description**: ${data.rule.description}\n\n`;
+    report += `**How to Fix**: ${data.rule.howToFix}\n\n`;
+    report += `**Fix Example**:\n\`\`\`html\n${data.rule.fixExample}\n\`\`\`\n\n`;
+    if (data.rule.autoFixable) {
+      report += `✨ **Auto-fixable**: This issue can be automatically fixed by Copilot\n\n`;
+    }
     report += `**WCAG**: ${data.rule.wcagLevel} - ${data.rule.wcagCriteria}\n\n`;
     report += `**Issues Found**: ${data.issues.length}\n\n`;
     
