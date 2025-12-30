@@ -1,0 +1,145 @@
+<div class="login-container">
+  <a routerLink="/home" aria-label="Back to Home">
+    <mat-icon aria-hidden="true" role="presentation">chevron_left</mat-icon>
+    Back to Home
+  </a>
+
+  <mat-card class="login-card">
+    <mat-card-header>
+      <img src="assets/logo.png" height="40" alt="Company logo">
+      <mat-card-title>Sign In</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email</mat-label>
+          <input matInput 
+                 type="email" 
+                 formControlName="email" 
+                 required
+                 autocomplete="email">
+          <mat-icon matPrefix>email</mat-icon>
+          <mat-icon matSuffix 
+                    (click)="clearEmail()" 
+                    (keydown.enter)="clearEmail()" 
+                    (keydown.space)="clearEmail(); $event.preventDefault()" 
+                    tabindex="0" 
+                    role="button" 
+                    aria-hidden="false" 
+                    [attr.aria-label]="'Clear email'">clear</mat-icon>
+          <mat-error *ngIf="loginForm.get('email')?.hasError('required')">
+            Email is required
+          </mat-error>
+          <mat-error *ngIf="loginForm.get('email')?.hasError('email')">
+            Please enter a valid email
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Password</mat-label>
+          <input matInput 
+                 [type]="hidePassword ? 'password' : 'text'" 
+                 formControlName="password"
+                 required
+                 autocomplete="current-password">
+          <mat-icon matPrefix>lock</mat-icon>
+          <button mat-icon-button 
+                  matSuffix 
+                  type="button"
+                  (click)="hidePassword = !hidePassword" 
+                  [attr.aria-label]="'Toggle password visibility'"
+                  [attr.aria-pressed]="!hidePassword">
+            <mat-icon aria-hidden="true">{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+          <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
+            Password is required
+          </mat-error>
+          <mat-error *ngIf="loginForm.get('password')?.hasError('minlength')">
+            Password must be at least 6 characters
+          </mat-error>
+        </mat-form-field>
+
+        <span (click)="forgotPassword()" 
+              (keydown.enter)="forgotPassword()" 
+              (keydown.space)="forgotPassword(); $event.preventDefault()" 
+              tabindex="0" 
+              role="button" 
+              style="color: #1a6269; cursor: pointer;">
+          Forgot Password?
+        </span>
+
+        <div class="form-actions">
+          <button mat-raised-button 
+                  color="primary" 
+                  type="submit"
+                  [disabled]="loginForm.invalid">
+            Sign In
+          </button>
+          
+          <button mat-icon-button 
+                  type="button" 
+                  (click)="showHelp()" 
+                  [attr.aria-label]="'Show help information'">
+            <mat-icon aria-hidden="true">help</mat-icon>
+          </button>
+        </div>
+      </form>
+
+      <p class="mat-caption" style="color: #5f6368; margin: 0.5rem 0; text-align: left;">
+        <span aria-hidden="true">*</span> Indicates required field
+      </p>
+
+      <p>
+        Don't have an account? 
+        <a (click)="goToSignup()" 
+           (keydown.enter)="goToSignup()" 
+           (keydown.space)="goToSignup(); $event.preventDefault()" 
+           tabindex="0" 
+           role="button" 
+           aria-label="Sign up for new account" 
+           style="cursor: pointer; color: #1a6269;">
+          Sign up here
+        </a>
+      </p>
+
+      <svg width="20" height="20" viewBox="0 0 20 20" role="img" aria-label="Decorative circle">
+        <title>Decorative circle</title>
+        <circle cx="10" cy="10" r="8" fill="#1a6269"/>
+      </svg>
+
+      <a href="/terms" mat-button>Terms of Service</a>
+
+      <mat-icon tabindex="0" 
+                aria-hidden="false" 
+                role="button" 
+                [attr.aria-label]="'Toggle dark mode'" 
+                (click)="toggleDarkMode()" 
+                (keydown.enter)="toggleDarkMode()" 
+                (keydown.space)="toggleDarkMode(); $event.preventDefault()">
+        dark_mode
+      </mat-icon>
+
+    </mat-card-content>
+  </mat-card>
+
+  <div *ngIf="isLoading" 
+       class="spinner-container" 
+       role="status" 
+       aria-live="polite" 
+       aria-busy="true">
+    <mat-spinner aria-label="Loading"></mat-spinner>
+    <span class="visually-hidden">Loading, please wait...</span>
+  </div>
+
+  <div role="status" 
+       aria-live="polite" 
+       aria-atomic="true"
+       class="visually-hidden">
+    <span *ngIf="loginForm.invalid && (loginForm.touched || loginForm.dirty)">
+      Form has errors. Please correct them before submitting.
+    </span>
+    <span *ngIf="errorMessage">
+      {{errorMessage}}
+    </span>
+  </div>
+</div>
