@@ -1,0 +1,149 @@
+{
+  "filesChecked": 1,
+  "errors": [
+    {
+      "file": "src/app/login/login.component.html",
+      "line": 25,
+      "rule": "Interactive icon without keyboard",
+      "message": "Interactive mat-icon missing keyboard handlers",
+      "code": "<mat-icon matSuffix (click)=\"clearEmail()\">clear</mat-icon>",
+      "fix": "Add (keydown.enter), (keydown.space), tabindex=\"0\", role=\"button\", and [attr.aria-label]"
+    },
+    {
+      "file": "src/app/login/login.component.html",
+      "line": 85,
+      "rule": "Link with click without keyboard",
+      "message": "Link with (click) missing keyboard handlers",
+      "code": "<a (click)=\"goToSignup()\" style=\"cursor: pointer; color: #228189;\">",
+      "fix": "Add (keydown.enter), (keydown.space), tabindex=\"0\", role=\"button\", and [attr.aria-label]"
+    },
+    {
+      "file": "src/app/login/login.component.html",
+      "line": 61,
+      "rule": "Span with click without keyboard",
+      "message": "Interactive span missing keyboard handlers",
+      "code": "<span (click)=\"forgotPassword()\" style=\"color: #228189; cursor: pointer;\">",
+      "fix": "Add (keydown.enter), (keydown.space), tabindex=\"0\", and role=\"button\""
+    },
+    {
+      "file": "src/app/login/login.component.html",
+      "line": 11,
+      "rule": "Image without alt",
+      "message": "Image missing alt attribute",
+      "code": "<img src=\"assets/logo.png\" height=\"40\">",
+      "fix": "Add alt=\"Description\" or alt=\"\" for decorative images"
+    },
+    {
+      "file": "src/app/login/login.component.html",
+      "line": 91,
+      "rule": "SVG without role or accessible name",
+      "message": "Standalone SVG missing role=\"img\" and accessible name",
+      "code": "<svg width=\"20\" height=\"20\" viewBox=\"0 0 20 20\">",
+      "fix": "Add role=\"img\" and aria-label=\"Description\" or <title>Description</title>. Use aria-hidden=\"true\" for decorative SVGs"
+    },
+    {
+      "file": "src/app/login/login.component.html",
+      "line": 61,
+      "rule": "Old color contrast",
+      "message": "Using old color with poor contrast",
+      "code": "<span (click)=\"forgotPassword()\" style=\"color: #228189; cursor: pointer;\">",
+      "fix": "Replace #228189 with #1a6269 (better contrast ratio)"
+    },
+    {
+      "file": "src/app/login/login.component.html",
+      "line": 85,
+      "rule": "Old color contrast",
+      "message": "Using old color with poor contrast",
+      "code": "<a (click)=\"goToSignup()\" style=\"cursor: pointer; color: #228189;\">",
+      "fix": "Replace #228189 with #1a6269 (better contrast ratio)"
+    },
+    {
+      "file": "src/app/login/login.component.html",
+      "line": 92,
+      "rule": "Old color contrast",
+      "message": "Using old color with poor contrast",
+      "code": "<circle cx=\"10\" cy=\"10\" r=\"8\" fill=\"#228189\"/>",
+      "fix": "Replace #228189 with #1a6269 (better contrast ratio)"
+    },
+    {
+      "file": "src/app/login/login.component.html",
+      "line": 43,
+      "rule": "Button nesting anchor",
+      "message": "Invalid HTML: <a> nested inside <button>",
+      "code": "<button mat-icon-button",
+      "fix": "Use <div> with icon + <a>, or <button> with <span>"
+    },
+    {
+      "file": "src/app/login/login.component.html",
+      "line": 96,
+      "rule": "Button nesting anchor",
+      "message": "Invalid HTML: <a> nested inside <button>",
+      "code": "<button mat-button>",
+      "fix": "Use <div> with icon + <a>, or <button> with <span>"
+    },
+    {
+      "file": "src/app/login/login.component.html",
+      "line": 3,
+      "rule": "Back link without aria-label",
+      "message": "Back navigation link missing [attr.aria-label]",
+      "code": "<a routerLink=\"/home\">",
+      "fix": "Add [attr.aria-label]=\"'Back to [page]'\" and aria-hidden=\"true\" to icon"
+    },
+    {
+      "file": "src/app/login/login.component.html",
+      "line": 74,
+      "rule": "Icon-only button without aria-label",
+      "message": "Icon-only button missing aria-label (WCAG 4.1.2 violation)",
+      "code": "<button mat-icon-button type=\"button\" (click)=\"showHelp()\">",
+      "fix": "Add aria-label=\"Action description\" or [attr.aria-label]=\"'Action description'\" to button"
+    },
+    {
+      "file": "src/app/login/login.component.html",
+      "line": 25,
+      "rule": "Interactive icon without aria-label",
+      "message": "Interactive icon missing aria-label",
+      "code": "<mat-icon matSuffix (click)=\"clearEmail()\">clear</mat-icon>",
+      "fix": "Add aria-label=\"Action description\" or [attr.aria-label]=\"'Action description'\""
+    },
+    {
+      "file": "src/app/login/login.component.html",
+      "line": 101,
+      "rule": "Interactive icon without aria-label",
+      "message": "Interactive icon missing aria-label",
+      "code": "<mat-icon tabindex=\"0\"",
+      "fix": "Add aria-label=\"Action description\" or [attr.aria-label]=\"'Action description'\""
+    },
+    {
+      "file": "src/app/login/login.component.html",
+      "line": 101,
+      "rule": "Focusable element with aria-hidden true",
+      "message": "CRITICAL: Focusable mat-icon (tabindex=\"0\") must have aria-hidden=\"false\"",
+      "code": "<mat-icon tabindex=\"0\"",
+      "fix": "Add aria-hidden=\"false\" to expose element to assistive technology"
+    },
+    {
+      "file": "src/app/login/login.component.html",
+      "line": 101,
+      "rule": "Interactive icon without role button",
+      "message": "Interactive mat-icon missing role=\"button\"",
+      "code": "<mat-icon tabindex=\"0\"",
+      "fix": "Add role=\"button\" to indicate it is a clickable button"
+    },
+    {
+      "file": "src/app/login/login.component.html",
+      "line": 4,
+      "rule": "Decorative icon missing aria-hidden",
+      "message": "Decorative icon missing aria-hidden=\"true\"",
+      "code": "<mat-icon>chevron_left</mat-icon>",
+      "fix": "Add aria-hidden=\"true\" and role=\"presentation\" for decorative icons"
+    },
+    {
+      "file": "src/app/login/login.component.html",
+      "line": 113,
+      "rule": "Loading spinner without status role",
+      "message": "Loading indicator missing role=\"status\" and aria-live",
+      "code": "<mat-spinner></mat-spinner>",
+      "fix": "Wrap spinner in container with role=\"status\", aria-live=\"polite\", aria-busy=\"true\", and visually-hidden text"
+    }
+  ]
+}
