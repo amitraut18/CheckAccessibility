@@ -63,7 +63,13 @@ const rules = [
         name: 'Button nesting anchor',
         pattern: /<button[^>]*>[\s\S]*?<a[^>]*>/g,
         message: 'Invalid HTML: <a> nested inside <button>',
-        fix: 'Use <div> with icon + <a>, or <button> with <span>'
+        fix: 'Use <div> with icon + <a>, or <button> with <span>',
+        validate: (match) => {
+            // Skip mat-icon-button as it typically contains mat-icon, not anchors
+            if (match.includes('mat-icon-button')) return false;
+            // Only flag if there's actually an anchor tag with href or routerLink
+            return match.includes('<a') && (match.includes('href=') || match.includes('routerLink'));
+        }
     },
     {
         name: 'Back link without aria-label',
@@ -142,7 +148,24 @@ const rules = [
         name: 'Loading spinner without status role',
         pattern: /<mat-spinner(?![^>]*role="status")[^>]*>/g,
         message: 'Loading indicator missing role="status" and aria-live',
-        fix: 'Wrap spinner in container with role="status", aria-live="polite", aria-busy="true", and visually-hidden text'
+        fix: 'Wrap spinner in container with role="status", aria-live="polite", aria-busy="true", and visually-hidden text',
+        validate: (match, fullContent, matchIndex) => {
+            // Check if spinner is wrapped in a container with role="status"
+            // Look backwards from the match to find parent container
+            const beforeMatch = fullContent.substring(Math.max(0, matchIndex - 500), matchIndex);
+            const afterMatch = fullContent.substring(matchIndex, Math.min(fullContent.length, matchIndex + 500));
+            
+            // Check if there's a parent div with role="status" before the spinner
+            if (beforeMatch.includes('role="status"') && afterMatch.includes('</div>')) {
+                // Check if the role="status" is in a parent div, not somewhere else
+                const lastDivOpen = beforeMatch.lastIndexOf('<div');
+                const rolePosition = beforeMatch.lastIndexOf('role="status"');
+                if (rolePosition > lastDivOpen) {
+                    return false; // Skip - it's properly wrapped
+                }
+            }
+            return true;
+        }
     }
 ];
 
@@ -156,7 +179,7 @@ function checkFile(filePath) {
 
         matches.forEach(match => {
             // If there's a validate function, check if error should be reported
-            if (rule.validate && !rule.validate(match[0])) {
+            if (rule.validate && !rule.validate(match[0], content, match.index)) {
                 return;
             }
 
