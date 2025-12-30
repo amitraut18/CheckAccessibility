@@ -1,5 +1,5 @@
 <div class="login-container">
-  <a routerLink="/home" aria-label="Back to Home">
+  <a routerLink="/home" [attr.aria-label]="'Back to Home'">
     <mat-icon aria-hidden="true" role="presentation">chevron_left</mat-icon>
     Back to Home
   </a>
@@ -76,18 +76,15 @@
             Sign In
           </button>
           
-          <button mat-icon-button 
-                  type="button" 
-                  (click)="showHelp()" 
-                  [attr.aria-label]="'Show help information'">
+          <button mat-icon-button type="button" (click)="showHelp()" [attr.aria-label]="'Show help'">
             <mat-icon aria-hidden="true">help</mat-icon>
           </button>
         </div>
-      </form>
 
-      <p class="mat-caption" style="color: #5f6368; margin: 0.5rem 0; text-align: left;">
-        <span aria-hidden="true">*</span> Indicates required field
-      </p>
+        <p class="mat-caption" style="color: #5f6368; margin: 0.5rem 0; text-align: left;">
+          <span aria-hidden="true">*</span> Indicates required field
+        </p>
+      </form>
 
       <p>
         Don't have an account? 
@@ -96,7 +93,7 @@
            (keydown.space)="goToSignup(); $event.preventDefault()" 
            tabindex="0" 
            role="button" 
-           aria-label="Sign up for new account" 
+           [attr.aria-label]="'Sign up for a new account'" 
            style="cursor: pointer; color: #1a6269;">
           Sign up here
         </a>

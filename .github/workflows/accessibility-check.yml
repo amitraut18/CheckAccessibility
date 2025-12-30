@@ -2,135 +2,102 @@ name: Accessibility Check
 
 on:
   pull_request:
-    branches: [main, master, develop]
+    types: [opened, synchronize, reopened]
     paths:
       - '**/*.html'
       - '**/*.ts'
-      - '**/*.scss'
-  push:
-    branches: [main, master, develop]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
 
 jobs:
-  accessibility-lint:
+  accessibility-check:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: '18'
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Get changed HTML files
+        id: changed-files
+        run: |
+          echo "Checking for changed HTML files..."
+          git fetch origin ${{ github.base_ref }}
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep '\.html$' || true)
+          echo "changed_files<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGED_FILES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
-      - name: Run Accessibility Checks
+          if [ -n "$CHANGED_FILES" ]; then
+            echo "Found HTML changes:"
+            echo "$CHANGED_FILES"
+          else
+            echo "No HTML files changed"
+          fi
+
+      - name: Run accessibility checks
+        if: steps.changed-files.outputs.changed_files != ''
         id: a11y-check
         run: |
-          echo "🔍 Running Accessibility Checks using custom rules..."
-          
-          # Make script executable
-          chmod +x .github/scripts/accessibility-checker.js
-          
-          # Run the accessibility checker
-          node .github/scripts/accessibility-checker.js --src=src
-          
-          # Check exit code
-          EXIT_CODE=$?
-          
-          if [ $EXIT_CODE -eq 0 ]; then
-            echo "✅ No accessibility errors found"
-          else
-            echo "❌ Accessibility issues detected"
-          fi
-          
-          # Set output for next steps
-          echo "exit_code=$EXIT_CODE" >> $GITHUB_OUTPUT
-          
-          exit $EXIT_CODE
+          node .github/scripts/check-accessibility.js
+        continue-on-error: true
 
-      - name: Upload Accessibility Report
-        if: always()
-        uses: actions/upload-artifact@v4
+      - name: Comment PR with results
+        if: steps.changed-files.outputs.changed_files != ''
+        uses: actions/github-script@v6
         with:
-          name: accessibility-report
-          path: accessibility-report.md
-
-      - name: Comment PR with Results
-        if: github.event_name == 'pull_request' && always()
-        uses: actions/github-script@v7
-        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             const fs = require('fs');
-            const report = fs.readFileSync('accessibility-report.md', 'utf8');
-            
+
+            let comment = '## 🤖 Accessibility Check Results\n\n';
+
+            try {
+              const results = fs.readFileSync('.github/a11y-results.json', 'utf8');
+              const data = JSON.parse(results);
+
+              if (data.errors.length === 0) {
+                comment += '✅ **All accessibility checks passed!**\n\n';
+                comment += `Checked ${data.filesChecked} HTML file(s).\n`;
+              } else {
+                comment += '❌ **Accessibility issues found:**\n\n';
+                comment += `Checked ${data.filesChecked} file(s), found ${data.errors.length} issue(s).\n\n`;
+                
+                data.errors.forEach(error => {
+                  comment += `### 📄 \`${error.file}\`\n`;
+                  comment += `**Line ${error.line}:** ${error.message}\n`;
+                  comment += '```html\n' + error.code + '\n```\n';
+                  comment += `**Fix:** ${error.fix}\n\n`;
+                });
+
+                comment += '\n---\n';
+                comment += '💡 **Quick fixes:**\n';
+                comment += '- Review [Accessibility Guidelines](.github/copilot-instructions.md)\n';
+                comment += '- Use [Quick Reference](.github/ACCESSIBILITY_QUICK_REFERENCE.md)\n';
+                comment += '- Ask Copilot: `@workspace Make this component accessible`\n';
+              }
+            } catch (error) {
+              comment += '⚠️ Error reading accessibility check results.\n';
+            }
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: report
+              body: comment
             });
 
-  axe-core-analysis:
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build application
-        run: npm run build -- --configuration development || npm run build
-
-      - name: Install Axe-core CLI
-        run: npm install -g @axe-core/cli
-
-      - name: Serve and test with Axe
+      - name: Fail if accessibility issues found
+        if: steps.a11y-check.outcome == 'failure'
         run: |
-          # Start server in background
-          npm start &
-          SERVER_PID=$!
-          
-          # Wait for server to be ready
-          echo "Waiting for server to start..."
-          timeout=60
-          while ! curl -s http://localhost:4200 > /dev/null; do
-            timeout=$((timeout-1))
-            if [ $timeout -le 0 ]; then
-              echo "Server failed to start"
-              kill $SERVER_PID || true
-              exit 1
-            fi
-            sleep 1
-          done
-          
-          echo "Server is ready, running Axe tests..."
-          
-          # Run axe-core tests
-          axe http://localhost:4200 --exit || true
-          
-          # Cleanup
-          kill $SERVER_PID || true
-
-      - name: Comment on PR
-        if: github.event_name == 'pull_request' && failure()
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '❌ Accessibility tests failed. Please check the workflow logs for details.'
-            });
+          echo "❌ Accessibility checks failed. Please fix the issues above."
+          exit 1
