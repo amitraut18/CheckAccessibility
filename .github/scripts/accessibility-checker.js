@@ -62,7 +62,16 @@ const ACCESSIBILITY_RULES = [
     fixExample: '<mat-icon (click)="delete()" [attr.aria-label]="\'Delete item\'">delete</mat-icon>',
     autoFixable: false
   },
-  {,
+  {
+    id: 'button-without-text-aria-label',
+    name: 'Button Without Text ARIA Label',
+    description: 'Icon-only buttons must have aria-label or [attr.aria-label]',
+    pattern: '<button[^>]*mat-icon-button',
+    excludePattern: '(aria-label=|\\[attr\\.aria-label\\])',
+    severity: 'error',
+    fileTypes: ['html'],
+    wcagLevel: 'A',
+    wcagCriteria: '4.1.2 Name, Role, Value',
     howToFix: 'Add [attr.aria-label] with descriptive action text',
     fixExample: '<button mat-icon-button [attr.aria-label]="\'Delete item\'"><mat-icon aria-hidden="true">delete</mat-icon></button>',
     autoFixable: false
@@ -94,17 +103,17 @@ const ACCESSIBILITY_RULES = [
     howToFix: 'Add keyboard event handlers, tabindex, and role="button"',
     fixExample: '<span (click)="method()" (keydown.enter)="method()" (keydown.space)="method(); $event.preventDefault()" tabindex="0" role="button">Text</span>',
     autoFixable: false
-    id: 'span-click-keyboard',
-    name: 'Span Click Keyboard Support',
-    description: 'Interactive spans with (click) must have keyboard support',
-    pattern: '<span[^>]*(click)=',
-    excludePattern: 'keydown\\.enter',
-    severity: 'error',
-    fileTypes: ['html'],
-    wcagLevel: 'A',
-    wcagCriteria: '2.1.1 Keyboard'
   },
-  {,
+  {
+    id: 'color-contrast',
+    name: 'Color Contrast',
+    description: 'Replace #228189 with #1a6269 for better contrast',
+    pattern: '#228189',
+    excludePattern: null,
+    severity: 'warning',
+    fileTypes: ['html', 'scss', 'css'],
+    wcagLevel: 'AA',
+    wcagCriteria: '1.4.3 Contrast (Minimum)',
     howToFix: 'Replace #228189 with #1a6269 for 4.8:1 contrast ratio',
     fixExample: 'color: #1a6269; /* Was: #228189 */',
     autoFixable: true
